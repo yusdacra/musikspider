@@ -15,7 +15,11 @@
       in {
         devShells.default = mkNakedShell {
           name = "musikspider-devshell";
-          packages = with pkgs; [deno];
+          packages = with pkgs; [
+            deno
+            nodePackages_latest.vscode-json-languageserver
+            taplo
+          ];
         };
       };
     };

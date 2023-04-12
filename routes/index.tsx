@@ -7,19 +7,17 @@ export default function Home() {
       <Head>
         <title>Fresh App</title>
       </Head>
-      <div>
+      <div class="p-4 mx-auto max-w-screen-md">
         <img
           src="/logo.svg"
-          width="64"
-          height="64"
+          class="w-32 h-32"
           alt="the fresh logo: a sliced lemon dripping with juice"
         />
-        <p>
+        <p class="my-6">
           Welcome to `fresh`. Try updating this message in the ./routes/index.tsx
           file, and refresh.
-          Hiiiiiii
         </p>
-        <Counter start={100} />
+        <Counter start={3} />
       </div>
     </>
   );
