@@ -1,22 +1,19 @@
-import { Head } from "$fresh/runtime.ts";
+import { getCookies } from "$std/http/cookie.ts";
 
-export default function Home() {
-  return (
-    <>
-      <Head>
-        <title>Fresh App</title>
-      </Head>
-      <div class="p-4 mx-auto max-w-screen-md">
-        <img
-          src="/logo.svg"
-          class="w-32 h-32"
-          alt="the fresh logo: a sliced lemon dripping with juice"
-        />
-        <p class="my-6">
-          Welcome to `fresh`. Try updating this message in the ./routes/index.tsx
-          file, and refresh.
-        </p>
-      </div>
-    </>
-  );
+export function handler(req: Request): Response {
+  const cookies = getCookies(req.headers);
+  const username = cookies["username"];
+  const password = cookies["password"];
+
+  if (username != null && password != null) {
+    return new Response("", {
+      status: 303,
+      headers: { location: "/library" },
+    });
+  } else {
+    return new Response("", {
+      status: 303,
+      headers: { location: "/login" },
+    });
+  }
 }
