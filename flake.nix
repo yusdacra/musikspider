@@ -1,4 +1,6 @@
 {
+  description = "Web application for musikcube servers";
+
   inputs.parts.url = "github:hercules-ci/flake-parts";
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   inputs.systems.url = "github:nix-systems/x86_64-linux";
