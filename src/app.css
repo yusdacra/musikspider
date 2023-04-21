@@ -1,0 +1,2 @@
+html, body { @apply h-full overflow-hidden; }
+.card { @apply shadow shadow-black; }
