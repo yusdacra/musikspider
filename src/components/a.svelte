@@ -6,6 +6,6 @@
 	$: isOnPage = href === $page.route.id;
 </script>
 
-<a {href} class="btn {isOnPage ? 'variant-ghost-primary' : 'hover:variant-soft-primary'}">
+<a {href} class="btn p-2 px-3 {isOnPage ? 'variant-ghost-primary' : 'hover:variant-soft-primary'}">
 	<slot />
 </a>

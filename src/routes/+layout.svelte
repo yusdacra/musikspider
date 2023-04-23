@@ -34,28 +34,23 @@
 		}
 	});
 	comm.connect($address, $token);
-	comm.onConnect(() => {
-		comm
-			.fetchTracksCount()
-			.then((count) => {
-				let remaining = count;
-				console.log(count);
-				while (remaining > 0) {
-					const offset = count - remaining;
-					comm.fetchTracks(500, offset).then((ts) => {
-						tracks.update((map) => {
-							ts.forEach((t) => map.set(t.id, t.track));
-							return map;
-						});
-						tracksSorted.update((map) => {
-							ts.forEach((t, index) => map.set(index + offset, t.id));
-							return map;
-						});
-					});
-					remaining -= 500;
-				}
-			})
-			.catch(() => null);
+	comm.onConnect(async () => {
+		const count = await comm.fetchTracksCount();
+
+		let remaining = count;
+		while (remaining > 0) {
+			const offset = count - remaining;
+			const ts = await comm.fetchTracks(500, offset);
+			tracks.update((map) => {
+				ts.forEach((t) => map.set(t.id, t.track));
+				return map;
+			});
+			tracksSorted.update((map) => {
+				ts.forEach((t, index) => map.set(index + offset, t.id));
+				return map;
+			});
+			remaining -= 500;
+		}
 	});
 </script>
 

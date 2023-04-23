@@ -16,6 +16,8 @@ interface Message {
 type MessageType = 'request' | 'response' | 'broadcast';
 type RequestCallback = (arg0: Message | null) => void;
 
+type Category = 'album' | 'artist' | 'album_artist' | 'genre' | 'playlist';
+
 interface Callbacks {
   onDisconnect: (authenticated: boolean, reason: string) => void;
   onConnect: (initial: Message) => void;
@@ -111,9 +113,11 @@ export class MetadataCommunicator {
             id: t.id,
             track: {
               title: t.title,
-              album_id: t.album_id,
-              artist_id: t.artist_id,
               track_num: t.track,
+              album_title: t.album,
+              album_id: t.album_id,
+              artist_name: t.artist,
+              artist_id: t.artist_id,
               thumbnail_id: t.thumbnail_id,
             }
           })));
@@ -159,7 +163,7 @@ export class MetadataCommunicator {
     );
   }
 
-  onConnect(cb: () => void) {
+  onConnect(cb: () => Promise<void>) {
     if (!this.isClosed() && this.authenticated) {
       cb();
     } else {
