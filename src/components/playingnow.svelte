@@ -33,7 +33,7 @@
 </script>
 
 {#if $playingNow !== null}
-	<div class="flex gap-2">
+	<div class="flex gap-2 z-10">
 		<audio
 			id="audio-source"
 			src={audioUrl}
@@ -43,7 +43,7 @@
 			autoplay
 		/>
 		<button
-			class="z-10 relative placeholder w-12 h-12"
+			class="relative placeholder w-12 h-12"
 			on:pointerenter={(_) => (showIcon = true)}
 			on:pointerleave={(_) => (showIcon = false)}
 			on:click={(_) => {

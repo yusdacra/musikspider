@@ -65,8 +65,8 @@
 <AppShell>
 	<svelte:fragment slot="footer">
 		<div class="w-screen">
-			<div class="card fixed z-[1] mr-4 bottom-14 right-0"><Navbar /></div>
-			<div class="card rounded-none fixed z-[1] w-full bottom-0 flex items-center h-12">
+			<div class="card fixed mr-4 bottom-14 right-0"><Navbar /></div>
+			<div class="card rounded-none fixed w-full bottom-0 flex items-center h-12">
 				<PlayingNow />
 				<div class="ml-auto">volume</div>
 			</div>
