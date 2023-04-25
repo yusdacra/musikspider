@@ -6,9 +6,10 @@
 	import '../app.css';
 
 	import { AppShell, Toast, toastStore } from '@skeletonlabs/skeleton';
-	import Navbar from '../components/navbar.svelte';
-	import { address, token, tracks, tracksSorted } from '../stores';
+	import { address, playingNow, token, tracks, tracksSorted } from '../stores';
 	import { _metadataComm as comm } from './+layout';
+	import Navbar from '../components/navbar.svelte';
+	import PlayingNow from '../components/playingnow.svelte';
 
 	comm.setCallbacks({
 		onConnect: () => {
@@ -24,6 +25,7 @@
 				background: 'variant-filled-error',
 				autohide: false
 			});
+			playingNow.set(null);
 		},
 		onIncompatible: (reason) => {
 			toastStore.trigger({
@@ -52,25 +54,24 @@
 			remaining -= 500;
 		}
 	});
+
+	$: title = $playingNow !== null ? `${$playingNow.track.title} - musikspider` : `musikspider`;
 </script>
 
 <svelte:head>
-	<title>musikspider</title>
+	<title>{title}</title>
 </svelte:head>
 
 <AppShell>
 	<svelte:fragment slot="footer">
-		<div class="flex w-screen place-content-center">
-			<div class="card m-2 sm:hidden z-1 fixed bottom-[48px]"><Navbar /></div>
-		</div>
-		<div class="flex flex-col">
-			<div class="card m-2 max-md:m-0 px-4 flex flex-1 items-center min-h-[48px]">
-				now playing
-				<div class="mx-auto max-sm:hidden"><Navbar /></div>
-				<div class="max-sm:ml-auto">volume</div>
+		<div class="w-screen">
+			<div class="card fixed z-[1] mr-4 bottom-14 right-0"><Navbar /></div>
+			<div class="card rounded-none fixed z-[1] w-full bottom-0 flex items-center h-12">
+				<PlayingNow />
+				<div class="ml-auto">volume</div>
 			</div>
 		</div>
 	</svelte:fragment>
 	<slot />
 </AppShell>
-<Toast />
+<Toast position="tr" />

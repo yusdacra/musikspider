@@ -2,14 +2,16 @@
 	import VirtualList from 'svelte-tiny-virtual-list';
 	import { tracks, tracksSorted } from '../stores';
 	import TrackComponent from '../components/track.svelte';
-	import type { Track } from '../types';
+	import type { Track, TrackWithId } from '../types';
 
 	$: trackCount = $tracksSorted.size;
-	let trackItemSize = 72;
+	let trackItemSize = 62;
 	let listHeight = 0;
 
-	function getTrack(index: number): Track {
-		return $tracks.get($tracksSorted.get(index)!)!;
+	function getTrack(index: number): TrackWithId {
+		let id = $tracksSorted.get(index)!;
+		let track = $tracks.get(id)!;
+		return { id, track };
 	}
 </script>
 
@@ -21,7 +23,7 @@
 		overscanCount={1}
 	>
 		<div slot="item" let:index let:style {style}>
-			<div class="pr-4 md:ml-32"><TrackComponent track={getTrack(index)} /></div>
+			<div class="max-sm:pr-4"><TrackComponent track_with_id={getTrack(index)} /></div>
 		</div>
 	</VirtualList>
 </div>
