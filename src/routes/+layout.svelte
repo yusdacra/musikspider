@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	// Your selected Skeleton theme:
 	import '@skeletonlabs/skeleton/themes/theme-vintage.css';
 	// This contains the bulk of Skeletons required styles:
@@ -6,13 +6,17 @@
 	import '../app.css';
 
 	import { AppShell, Toast, toastStore } from '@skeletonlabs/skeleton';
-	import { address, playingNow, token, tracks, tracksSorted } from '../stores';
+	import { address, currentTrack, queuePosition, token, tracks, tracksSorted } from '../stores';
 	import { _metadataComm as comm } from './+layout';
 	import Navbar from '../components/navbar.svelte';
 	import PlayingNow from '../components/playingnow.svelte';
+	import VolumeSlider from '../components/volumeSlider.svelte';
+
+	$: title = $currentTrack !== null ? `${$currentTrack.track.title} - musikspider` : `musikspider`;
 
 	comm.setCallbacks({
 		onConnect: () => {
+			toastStore.clear();
 			toastStore.trigger({
 				message: 'Successfully connected to the server',
 				background: 'variant-filled-success'
@@ -25,7 +29,7 @@
 				background: 'variant-filled-error',
 				autohide: false
 			});
-			playingNow.set(null);
+			queuePosition.set(null);
 		},
 		onIncompatible: (reason) => {
 			toastStore.trigger({
@@ -54,8 +58,6 @@
 			remaining -= 500;
 		}
 	});
-
-	$: title = $playingNow !== null ? `${$playingNow.track.title} - musikspider` : `musikspider`;
 </script>
 
 <svelte:head>
@@ -64,12 +66,12 @@
 
 <AppShell>
 	<svelte:fragment slot="footer">
-		<div class="w-screen">
-			<div class="card fixed mr-4 bottom-14 right-0"><Navbar /></div>
-			<div class="card rounded-none fixed w-full bottom-0 flex items-center h-12">
-				<PlayingNow />
-				<div class="ml-auto">volume</div>
-			</div>
+		<div class="flex w-screen place-content-end max-sm:place-content-center">
+			<div class="card fixed bottom-14 sm:mr-4"><Navbar /></div>
+		</div>
+		<div class="card rounded-none w-screen flex flex-grow items-center h-12">
+			<PlayingNow />
+			<div class="ml-auto"><VolumeSlider /></div>
 		</div>
 	</svelte:fragment>
 	<slot />

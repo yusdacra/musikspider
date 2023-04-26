@@ -1,6 +1,6 @@
 <script lang="ts">
 	import VirtualList from 'svelte-tiny-virtual-list';
-	import { tracks, tracksSorted } from '../stores';
+	import { queue, tracks, tracksSorted } from '../stores';
 	import TrackComponent from '../components/track.svelte';
 	import type { Track, TrackWithId } from '../types';
 
@@ -20,10 +20,12 @@
 		height={listHeight}
 		itemSize={trackItemSize}
 		itemCount={trackCount}
-		overscanCount={1}
+		overscanCount={3}
+		getKey={(index) => $tracksSorted.get(index)}
 	>
 		<div slot="item" let:index let:style {style}>
-			<div class="max-sm:pr-4"><TrackComponent track_with_id={getTrack(index)} /></div>
+			<div class="pt-2 pl-2 max-sm:pr-4"><TrackComponent track_with_id={getTrack(index)} /></div>
+			<hr class="w-full mt-1.5" />
 		</div>
 	</VirtualList>
 </div>
