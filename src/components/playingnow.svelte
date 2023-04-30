@@ -89,10 +89,10 @@
 				navigator.mediaSession.setPositionState({ position: currentTime, duration });
 			}}
 			on:ended={(ev) => {
-				duration = 0;
 				currentTime = 0;
 				switch ($loop) {
 					case LoopKind.Off:
+						duration = 0;
 						nextQueuePosition();
 						break;
 					case LoopKind.Once:
