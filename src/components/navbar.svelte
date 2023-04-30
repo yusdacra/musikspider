@@ -1,18 +1,14 @@
 <script lang="ts">
 	import Link from './a.svelte';
-	import IconTrack from '~icons/mdi/music-box';
+	import IconSearch from '~icons/mdi/search';
 	import IconSettings from '~icons/mdi/settings';
-	import IconArtist from '~icons/mdi/artist';
-	import IconAlbum from '~icons/mdi/album';
-	import IconPlaylist from '~icons/mdi/playlist-music';
-	import IconQueue from '~icons/mdi/format-list-bulleted';
+	import IconQueue from '~icons/mdi/playlist-music';
+	import { page } from '$app/stores';
+	import { search, searchText, setQueuePositionTo, tracksSorted } from '../stores';
 
 	let links: { id: string; href?: string; icon: any }[] = [
+		{ id: 'search', href: '/', icon: IconSearch },
 		{ id: 'queue', icon: IconQueue },
-		{ id: 'tracks', href: '/', icon: IconTrack },
-		{ id: 'albums', icon: IconAlbum },
-		{ id: 'artists', icon: IconArtist },
-		{ id: 'playlists', icon: IconPlaylist },
 		{ id: 'settings', icon: IconSettings }
 	];
 </script>
@@ -22,5 +18,21 @@
 		<Link title={link.id} href={link.href ?? `/${link.id}`}>
 			<svelte:component this={link.icon} class="w-7 h-7" />
 		</Link>
+		{#if link.id === 'search' && $page.route.id === '/'}
+			<input
+				class="input rounded-none"
+				bind:value={$searchText}
+				on:input={(ev) => search(ev.currentTarget.value)}
+				on:keydown={(ev) => {
+					if (ev.key === 'Enter') {
+						const track_id = $tracksSorted.at(0) ?? null;
+						if (track_id !== null) {
+							setQueuePositionTo(track_id);
+							document.getElementById(`track-${track_id}`)?.focus();
+						}
+					}
+				}}
+			/>
+		{/if}
 	{/each}
 </nav>

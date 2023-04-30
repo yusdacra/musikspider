@@ -1,16 +1,25 @@
 <script lang="ts">
 	// Your selected Skeleton theme:
-	import '@skeletonlabs/skeleton/themes/theme-vintage.css';
+	import '@skeletonlabs/skeleton/themes/theme-crimson.css';
 	// This contains the bulk of Skeletons required styles:
 	import '@skeletonlabs/skeleton/styles/all.css';
 	import '../app.css';
 
 	import { AppShell, Toast, toastStore } from '@skeletonlabs/skeleton';
-	import { address, currentTrack, queuePosition, token, tracks, tracksSorted } from '../stores';
+	import {
+		address,
+		currentTrack,
+		paused,
+		queuePosition,
+		token,
+		tracks,
+		tracksSorted
+	} from '../stores';
 	import { _metadataComm as comm } from './+layout';
 	import Navbar from '../components/navbar.svelte';
 	import PlayingNow from '../components/playingnow.svelte';
 	import VolumeSlider from '../components/volumeSlider.svelte';
+	import TrackControls from '../components/trackControls.svelte';
 
 	$: title = $currentTrack !== null ? `${$currentTrack.track.title} - musikspider` : `musikspider`;
 
@@ -41,6 +50,10 @@
 	});
 	comm.connect($address, $token);
 	comm.onConnect(async () => {
+		toastStore.trigger({
+			message: 'Fetching tracks',
+			background: 'variant-filled-tertiary'
+		});
 		const count = await comm.fetchTracksCount();
 
 		let remaining = count;
@@ -52,13 +65,29 @@
 				return map;
 			});
 			tracksSorted.update((map) => {
-				ts.forEach((t, index) => map.set(index + offset, t.id));
+				ts.forEach((t) => map.push(t.id));
 				return map;
 			});
 			remaining -= 500;
 		}
+
+		toastStore.trigger({
+			message: `Fetched ${count} tracks`,
+			background: 'variant-filled-success'
+		});
 	});
 </script>
+
+<svelte:window
+	on:keydown={(event) => {
+		const tagName = document.activeElement?.tagName ?? '';
+		if (tagName !== 'INPUT' && event.code === 'Space') {
+			event.preventDefault();
+			event.stopPropagation();
+			paused.set(!$paused);
+		}
+	}}
+/>
 
 <svelte:head>
 	<title>{title}</title>
@@ -71,7 +100,10 @@
 		</div>
 		<div class="card rounded-none w-screen flex flex-grow items-center h-12">
 			<PlayingNow />
-			<div class="ml-auto"><VolumeSlider /></div>
+			<div class="flex items-center ml-auto">
+				<TrackControls />
+				<VolumeSlider />
+			</div>
 		</div>
 	</svelte:fragment>
 	<slot />

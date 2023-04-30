@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { TrackWithId } from '../types';
-	import { queue, queuePosition, makeThumbnailUrl, currentTrack } from '../stores';
+	import { makeThumbnailUrl, currentTrack, setQueuePositionTo, getAudioElement } from '../stores';
 	import Spinnny from '~icons/line-md/loading-loop';
 	import IconPlay from '~icons/mdi/play';
 	import IconMusic from '~icons/mdi/music';
@@ -17,17 +17,13 @@
 
 <div class="flex gap-2 w-fit max-w-full">
 	<button
+		id={`track-${track_id}`}
 		class="relative placeholder rounded min-w-[3rem] min-h-[3rem]"
 		on:click={(_) => {
-			const position = $queue.indexOf(track_id);
-			if (position !== -1) {
-				queuePosition.set(position);
-			} else {
-				queue.update((q) => {
-					q.push(track_id);
-					return q;
-				});
-				queuePosition.set($queue.length - 1);
+			setQueuePositionTo(track_id);
+			const elem = getAudioElement();
+			if (elem !== null) {
+				elem.currentTime = 0;
 			}
 		}}
 		on:pointerenter={(_) => (showPlayIcon = true)}
@@ -52,12 +48,12 @@
 	</button>
 	<div class="whitespace-nowrap overflow-ellipsis overflow-hidden">
 		<span>#{track.track_num} - {track.title}</span>
-		<span
-			class="badge variant-filled-primary py-0.5 {$currentTrack?.id == track_id
-				? 'visible'
-				: 'hidden'}">playing</span
-		>
 		<div class="text-sm whitespace-nowrap overflow-ellipsis overflow-hidden">
+			<span
+				class="badge variant-filled-primary py-0.5 {$currentTrack?.id == track_id
+					? 'visible'
+					: 'hidden'}">playing</span
+			>
 			<span class="opacity-70">{track.album_title ? `from ${track.album_title}` : ''}</span>
 			<span class="opacity-40">{track.artist_name ? `by ${track.artist_name}` : ''}</span>
 		</div>

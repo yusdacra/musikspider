@@ -10,7 +10,9 @@
 <a
 	{href}
 	{title}
-	class="btn py-2 px-2.5 {isOnPage ? 'variant-ghost-primary' : 'hover:variant-soft-primary'}"
+	class="btn py-2 px-2.5 {isOnPage
+		? `${title === 'search' ? 'rounded-r-none' : ''} variant-ghost-primary`
+		: 'hover:variant-soft-primary'}"
 >
 	<slot />
 </a>

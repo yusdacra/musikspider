@@ -3,28 +3,25 @@
 		makeAudioUrl,
 		makeThumbnailUrl,
 		currentTrack,
+		volume,
+		muted,
+		paused,
+		nextQueuePosition,
+		getAudioElement,
+		loop,
 		queuePosition,
-		queue,
-		volume
+		prevQueuePosition
 	} from '../stores';
 	import IconPlay from '~icons/mdi/play';
 	import IconPause from '~icons/mdi/pause';
 	import IconMusic from '~icons/mdi/music';
 	import { RangeSlider } from '@skeletonlabs/skeleton';
-	import type { ResourceId } from '../types';
+	import { LoopKind } from '../types';
 
 	$: track = $currentTrack?.track;
 	$: track_id = $currentTrack?.id;
 	$: thumbUrl = track ? makeThumbnailUrl(track.thumbnail_id) : null;
 	$: audioUrl = track_id ? makeAudioUrl(track_id) : null;
-
-	function getAudioElement(id: ResourceId | null) {
-		const elem = document.getElementById(`audio-source-${id}`);
-		if (elem === null) {
-			return null;
-		}
-		return elem as HTMLAudioElement;
-	}
 
 	function calculateMinuteSecond(seconds: number) {
 		let secs = Math.floor(seconds);
@@ -37,7 +34,6 @@
 		return `${minutesFormatted}:${secondsFormatted}`;
 	}
 
-	let isPaused = false;
 	let currentTime = 0;
 	let duration = 0;
 
@@ -48,31 +44,76 @@
 <div class="flex gap-2 z-10">
 	{#if audioUrl !== null}
 		<audio
-			id="audio-source-{track_id}"
+			id="audio-source"
 			src={audioUrl}
 			autoplay
-			bind:paused={isPaused}
+			bind:paused={$paused}
 			bind:currentTime
 			bind:duration
+			bind:muted={$muted}
 			bind:volume={$volume}
-			on:ended={(_) => {
-				const pos = $queuePosition;
-				if (pos !== null) {
-					const _newPos = pos + 1;
-					const newPos = _newPos < $queue.length ? _newPos : null;
-					duration = 0;
-					currentTime = 0;
-					queuePosition.set(newPos);
+			on:loadstart={(_) => {
+				let mediaSession = navigator.mediaSession;
+				let artwork = [];
+				if (thumbUrl !== null) {
+					artwork.push({ src: thumbUrl });
+				}
+				mediaSession.metadata = new MediaMetadata({
+					title: track?.title,
+					album: track?.album_title,
+					artist: track?.artist_name,
+					artwork
+				});
+				mediaSession.setPositionState({ position: currentTime, duration });
+				mediaSession.setActionHandler('nexttrack', nextQueuePosition);
+				mediaSession.setActionHandler('previoustrack', prevQueuePosition);
+				mediaSession.setActionHandler('seekto', (ev) => {
+					if (ev.seekTime !== undefined) {
+						currentTime = ev.seekTime;
+					}
+				});
+				mediaSession.setActionHandler('seekbackward', () => {
+					currentTime -= 5;
+					if (currentTime < 0) {
+						currentTime = 0;
+					}
+				});
+				mediaSession.setActionHandler('seekforward', () => {
+					currentTime += 5;
+					if (currentTime > duration) {
+						currentTime = duration;
+					}
+				});
+			}}
+			on:timeupdate={(_) => {
+				navigator.mediaSession.setPositionState({ position: currentTime, duration });
+			}}
+			on:ended={(ev) => {
+				duration = 0;
+				currentTime = 0;
+				switch ($loop) {
+					case LoopKind.Off:
+						nextQueuePosition();
+						break;
+					case LoopKind.Once:
+						const queuePos = nextQueuePosition();
+						if (queuePos === null) {
+							queuePosition.set(0);
+						}
+						break;
+					case LoopKind.Always:
+						ev.currentTarget.play();
+						break;
 				}
 			}}
 		/>
 	{/if}
 	<button
-		class="relative placeholder w-12 h-12"
+		class="relative rounded-none placeholder w-12 h-12"
 		on:pointerenter={(_) => (showIcon = true)}
 		on:pointerleave={(_) => (showIcon = false)}
 		on:click={(_) => {
-			let elem = getAudioElement(track_id ?? null);
+			let elem = getAudioElement();
 			if (elem) {
 				elem.paused ? elem.play() : elem.pause();
 			}
@@ -88,8 +129,8 @@
 				on:load={() => (isError = false)}
 			/>
 		{/if}
-		<IconPlay class="child play-icon {showIcon && isPaused ? 'opacity-100' : 'opacity-0'}" />
-		<IconPause class="child play-icon {showIcon && !isPaused ? 'opacity-100' : 'opacity-0'}" />
+		<IconPlay class="child play-icon {showIcon && $paused ? 'opacity-100' : 'opacity-0'}" />
+		<IconPause class="child play-icon {showIcon && !$paused ? 'opacity-100' : 'opacity-0'}" />
 	</button>
 	<div class="flex flex-col gap-1">
 		<div

@@ -110,8 +110,9 @@ export class MetadataCommunicator {
         if (resp) {
           const data: any[] = resp.options.data;
           resolve(data.map((t) => ({
-            id: t.id,
+            id: t.external_id,
             track: {
+              id: t.id,
               title: t.title,
               track_num: t.track,
               album_title: t.album,

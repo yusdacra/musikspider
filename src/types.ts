@@ -1,6 +1,8 @@
 export type ResourceId = bigint;
+export type TrackId = string;
 
 export interface Track {
+  id: number,
   title: string,
   track_num: number,
   album_title: string,
@@ -11,7 +13,7 @@ export interface Track {
 }
 
 export interface TrackWithId {
-  id: ResourceId,
+  id: TrackId,
   track: Track,
 }
 
@@ -22,4 +24,10 @@ export interface Artist {
 export interface Album {
   title: string,
   artist_id: ResourceId,
+}
+
+export enum LoopKind {
+  Off,
+  Once,
+  Always,
 }

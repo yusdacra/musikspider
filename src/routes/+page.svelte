@@ -4,12 +4,12 @@
 	import TrackComponent from '../components/track.svelte';
 	import type { Track, TrackWithId } from '../types';
 
-	$: trackCount = $tracksSorted.size;
+	$: trackCount = $tracksSorted.length;
 	let trackItemSize = 62;
 	let listHeight = 0;
 
 	function getTrack(index: number): TrackWithId {
-		let id = $tracksSorted.get(index)!;
+		let id = $tracksSorted.at(index)!;
 		let track = $tracks.get(id)!;
 		return { id, track };
 	}
@@ -21,7 +21,7 @@
 		itemSize={trackItemSize}
 		itemCount={trackCount}
 		overscanCount={3}
-		getKey={(index) => $tracksSorted.get(index)}
+		getKey={(index) => $tracksSorted.at(index)}
 	>
 		<div slot="item" let:index let:style {style}>
 			<div class="pt-2 pl-2 max-sm:pr-4"><TrackComponent track_with_id={getTrack(index)} /></div>

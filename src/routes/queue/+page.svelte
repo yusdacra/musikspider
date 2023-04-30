@@ -30,7 +30,7 @@
 				<TrackComponent track_with_id={getTrack(index)} />
 				<button
 					title="remove track"
-					class="mr-2 ml-auto btn px-3 hover:variant-soft-primary"
+					class="btn w-7 h-7 mr-3 mt-2 ml-auto px-0 hover:variant-soft-primary"
 					on:click={(_) => {
 						queue.update((q) => {
 							q.splice(index, 1);

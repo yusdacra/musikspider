@@ -1,5 +1,5 @@
-import { get, readable, writable, type Writable } from 'svelte/store';
-import type { ResourceId, Track, TrackWithId } from './types';
+import { get, writable } from 'svelte/store';
+import { type ResourceId, type Track, type TrackId, type TrackWithId, LoopKind } from './types';
 
 function writableStorage(key: string, defaultValue: string) {
   const store = writable(localStorage.getItem(key) ?? defaultValue);
@@ -14,13 +14,13 @@ export function makeThumbnailUrl(id: ResourceId) {
   return `http://${get(address)}/thumbnail/${id}?token=${get(token)}`;
 }
 
-export function makeAudioUrl(id: ResourceId) {
-  return `http://${get(address)}/audio/id/${id}?token=${get(token)}`;
+export function makeAudioUrl(id: TrackId) {
+  return `http://${get(address)}/audio/external_id/${id}?token=${get(token)}`;
 }
 
 export const currentTrack = writable<TrackWithId | null>(null);
 
-export function getCurrentTrack(tracks: Map<ResourceId, Track>, queue: ResourceId[], position: number | null): TrackWithId | null {
+export function getCurrentTrack(tracks: Map<TrackId, Track>, queue: TrackId[], position: number | null): TrackWithId | null {
   if (position === null) {
     return null;
   }
@@ -39,11 +39,94 @@ export function getCurrentTrack(tracks: Map<ResourceId, Track>, queue: ResourceI
 }
 
 export const queuePosition = writable<number | null>(null);
-export const queue = writable<ResourceId[]>([]);
-export const tracks = writable<Map<ResourceId, Track>>(new Map());
-export const tracksSorted = writable<Map<number, ResourceId>>(new Map());
+export const queue = writable<TrackId[]>([]);
+export const tracks = writable<Map<TrackId, Track>>(new Map());
+export const tracksSorted = writable<TrackId[]>([]);
 
 queuePosition.subscribe((pos) => currentTrack.set(getCurrentTrack(get(tracks), get(queue), pos)));
 tracks.subscribe((newTracks) => currentTrack.set(getCurrentTrack(newTracks, get(queue), get(queuePosition))));
 
+export function setQueuePositionTo(track_id: TrackId) {
+  let q = get(queue);
+  const position = q.indexOf(track_id);
+  if (position !== -1) {
+    queuePosition.set(position);
+  } else {
+    q.push(track_id);
+    queue.set(q);
+    queuePosition.set(q.length - 1);
+  }
+}
+
+export function prevQueuePosition() {
+  const pos = get(queuePosition);
+  if (pos !== null) {
+    const q = get(queue);
+    const _newPos = pos - 1;
+    const newPos = _newPos > -1 ? _newPos : q.length - 1;
+    queuePosition.set(newPos);
+    return newPos;
+  }
+  return null;
+}
+
+export function nextQueuePosition() {
+  const pos = get(queuePosition);
+  if (pos !== null) {
+    const q = get(queue);
+    const _newPos = pos + 1;
+    const newPos = _newPos < q.length ? _newPos : 0;
+    queuePosition.set(newPos);
+    return newPos;
+  }
+  return null;
+}
+
+export const paused = writable<boolean>(false);
 export const volume = writable<number>(1.0);
+export const muted = writable<boolean>(false);
+export const loop = writable<LoopKind>(LoopKind.Off);
+
+export const searchText = writable<string>("");
+
+export function search(q: string) {
+  const query = q.trim();
+  const t = get(tracks);
+
+  if (query.length === 0) {
+    let result: TrackId[] = [];
+    t.forEach((_, id) => (result.push(id)));
+    tracksSorted.set(result);
+    return;
+  }
+
+  const smartCase = query.toLowerCase() === query;
+
+  let result: TrackId[] = [];
+  t.forEach((track, id) => {
+    if (smartCase) {
+      const titleHas = track.title.toLowerCase().includes(query);
+      const albumHas = track.album_title.toLowerCase().includes(query);
+      const artistHas = track.artist_name.toLowerCase().includes(query);
+      if (titleHas || albumHas || artistHas) {
+        result.push(id);
+      }
+    } else {
+      const titleHas = track.title.includes(query);
+      const albumHas = track.album_title.includes(query);
+      const artistHas = track.artist_name.includes(query);
+      if (titleHas || albumHas || artistHas) {
+        result.push(id);
+      }
+    }
+  });
+  tracksSorted.set(result);
+}
+
+export function getAudioElement() {
+  const elem = document.getElementById('audio-source');
+  if (elem === null) {
+    return null;
+  }
+  return elem as HTMLAudioElement;
+}
