@@ -30,9 +30,21 @@
 		}
 	}
 
+	function loopKindToString(kind: LoopKind) {
+		switch (kind) {
+			case LoopKind.Off:
+				return 'repeat off';
+			case LoopKind.Once:
+				return 'repeat playlist';
+			case LoopKind.Always:
+				return 'repeat song';
+		}
+	}
+
 	$: icon = getIcon($loop);
+	$: title = loopKindToString($loop);
 </script>
 
-<button on:click={changeLoop}>
+<button {title} on:click={changeLoop}>
 	<svelte:component this={icon} class="w-7 h-7" />
 </button>
