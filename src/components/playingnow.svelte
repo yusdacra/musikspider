@@ -65,8 +65,8 @@
 					artwork
 				});
 				mediaSession.setPositionState({ position: currentTime, duration });
-				mediaSession.setActionHandler('nexttrack', nextQueuePosition);
-				mediaSession.setActionHandler('previoustrack', prevQueuePosition);
+				mediaSession.setActionHandler('nexttrack', () => nextQueuePosition());
+				mediaSession.setActionHandler('previoustrack', () => prevQueuePosition());
 				mediaSession.setActionHandler('seekto', (ev) => {
 					if (ev.seekTime !== undefined) {
 						currentTime = ev.seekTime;
@@ -83,7 +83,7 @@
 				switch ($loop) {
 					case LoopKind.Off:
 						duration = 0;
-						nextQueuePosition();
+						nextQueuePosition(true);
 						break;
 					case LoopKind.Once:
 						const queuePos = nextQueuePosition();
@@ -119,8 +119,16 @@
 				on:load={() => (isError = false)}
 			/>
 		{/if}
-		<IconPlay class="child play-icon {showIcon && $paused ? 'opacity-100' : 'opacity-0'}" />
-		<IconPause class="child play-icon {showIcon && !$paused ? 'opacity-100' : 'opacity-0'}" />
+		<IconPlay
+			class="child play-icon variant-glass-surface {showIcon && $paused
+				? 'opacity-100'
+				: 'opacity-0'}"
+		/>
+		<IconPause
+			class="child play-icon variant-glass-surface {showIcon && !$paused
+				? 'opacity-100'
+				: 'opacity-0'}"
+		/>
 	</button>
 	<div class="flex flex-col gap-1">
 		<div
@@ -144,7 +152,7 @@
 
 <style lang="postcss">
 	button :global(.play-icon) {
-		@apply transition-opacity variant-glass-surface backdrop-blur-sm;
+		@apply transition-opacity backdrop-blur-sm;
 	}
 	button :global(.child) {
 		@apply absolute top-0 left-0 w-12 h-12;

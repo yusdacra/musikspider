@@ -58,28 +58,36 @@ export function setQueuePositionTo(track_id: TrackId) {
   }
 }
 
-export function prevQueuePosition() {
+export function getPrevQueuePosition(respectLoop: boolean) {
   const pos = get(queuePosition);
   if (pos !== null) {
     const q = get(queue);
+    const l = get(loop);
     const _newPos = pos - 1;
-    const newPos = _newPos > -1 ? _newPos : q.length - 1;
-    queuePosition.set(newPos);
+    const newPos = _newPos > -1 ? _newPos : l === LoopKind.Once || !respectLoop ? q.length - 1 : null;
     return newPos;
   }
   return null;
 }
 
-export function nextQueuePosition() {
+export function getNextQueuePosition(respectLoop: boolean) {
   const pos = get(queuePosition);
   if (pos !== null) {
     const q = get(queue);
+    const l = get(loop);
     const _newPos = pos + 1;
-    const newPos = _newPos < q.length ? _newPos : 0;
-    queuePosition.set(newPos);
+    const newPos = _newPos < q.length ? _newPos : l === LoopKind.Once || !respectLoop ? 0 : null;
     return newPos;
   }
   return null;
+}
+
+export function prevQueuePosition(respectLoop: boolean = false) {
+  queuePosition.set(getPrevQueuePosition(respectLoop));
+}
+
+export function nextQueuePosition(respectLoop: boolean = false) {
+  queuePosition.set(getNextQueuePosition(respectLoop));
 }
 
 export const paused = writable<boolean>(false);

@@ -31,7 +31,9 @@
 	>
 		<IconMusic class="absolute top-1 left-1 w-10 h-10" />
 		<Spinnny
-			class="absolute play-icon top-1 left-1 w-10 h-10 {showSpinner ? 'visible' : 'hidden'}"
+			class="absolute play-icon variant-glass-surface top-1 left-1 w-10 h-10 {showSpinner
+				? 'visible'
+				: 'hidden'}"
 		/>
 		<!-- svelte-ignore a11y-missing-attribute -->
 		<img
@@ -44,13 +46,15 @@
 			on:loadstart={() => (showSpinner = true)}
 			on:load={() => (showSpinner = false)}
 		/>
-		<IconPlay class="child play-icon {showPlayIcon ? 'opacity-100' : 'opacity-0'}" />
+		<IconPlay
+			class="child play-icon variant-glass-surface {showPlayIcon ? 'opacity-100' : 'opacity-0'}"
+		/>
 	</button>
 	<div class="whitespace-nowrap overflow-ellipsis overflow-hidden">
 		<span>#{track.track_num} - {track.title}</span>
 		<div class="text-sm whitespace-nowrap overflow-ellipsis overflow-hidden">
 			<span
-				class="badge variant-filled-primary py-0.5 {$currentTrack?.id == track_id
+				class="badge variant-filled-primary py-0.5 {$currentTrack?.id === track_id
 					? 'visible'
 					: 'hidden'}">playing</span
 			>
@@ -62,7 +66,7 @@
 
 <style lang="postcss">
 	button :global(.play-icon) {
-		@apply transition-opacity variant-glass-surface backdrop-blur-sm;
+		@apply transition-opacity backdrop-blur-sm;
 	}
 	button :global(.child) {
 		@apply rounded absolute top-0 left-0 w-12 h-12;

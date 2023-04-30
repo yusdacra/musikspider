@@ -3,7 +3,7 @@
 	import '@skeletonlabs/skeleton/themes/theme-crimson.css';
 	// This contains the bulk of Skeletons required styles:
 	import '@skeletonlabs/skeleton/styles/all.css';
-	import '../app.css';
+	import '../app.postcss';
 
 	import { AppShell, Toast, toastStore } from '@skeletonlabs/skeleton';
 	import {
