@@ -8,7 +8,10 @@
 	import { AppShell, Toast, toastStore } from '@skeletonlabs/skeleton';
 	import {
 		address,
+		changeLoop,
 		currentTrack,
+		getAudioElement,
+		muted,
 		paused,
 		queuePosition,
 		token,
@@ -81,10 +84,37 @@
 <svelte:window
 	on:keydown={(event) => {
 		const tagName = document.activeElement?.tagName ?? '';
-		if (tagName !== 'INPUT' && event.code === 'Space') {
+		const actions = new Map([
+			['Space', () => ($paused = !$paused)],
+			['KeyL', changeLoop],
+			['KeyM', () => ($muted = !$muted)],
+			['KeyS', () => document.getElementById('search-input')?.focus()],
+			[
+				'ArrowLeft',
+				() => {
+					const audio = getAudioElement();
+					if (audio !== null) {
+						audio.currentTime -= 5;
+					}
+				}
+			],
+			[
+				'ArrowRight',
+				() => {
+					const audio = getAudioElement();
+					if (audio !== null) {
+						audio.currentTime += 5;
+					}
+				}
+			]
+		]);
+		if (tagName !== 'INPUT' && actions.has(event.code)) {
 			event.preventDefault();
 			event.stopPropagation();
-			paused.set(!$paused);
+			const action = actions.get(event.code) ?? null;
+			if (action !== null) {
+				action();
+			}
 		}
 	}}
 />

@@ -72,18 +72,8 @@
 						currentTime = ev.seekTime;
 					}
 				});
-				mediaSession.setActionHandler('seekbackward', () => {
-					currentTime -= 5;
-					if (currentTime < 0) {
-						currentTime = 0;
-					}
-				});
-				mediaSession.setActionHandler('seekforward', () => {
-					currentTime += 5;
-					if (currentTime > duration) {
-						currentTime = duration;
-					}
-				});
+				mediaSession.setActionHandler('seekbackward', () => (currentTime -= 5));
+				mediaSession.setActionHandler('seekforward', () => (currentTime += 5));
 			}}
 			on:timeupdate={(_) => {
 				navigator.mediaSession.setPositionState({ position: currentTime, duration });

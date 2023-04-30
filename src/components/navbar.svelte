@@ -20,6 +20,7 @@
 		</Link>
 		{#if link.id === 'search' && $page.route.id === '/'}
 			<input
+				id="search-input"
 				class="input rounded-none"
 				bind:value={$searchText}
 				on:input={(ev) => search(ev.currentTarget.value)}

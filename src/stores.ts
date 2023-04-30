@@ -87,6 +87,20 @@ export const volume = writable<number>(1.0);
 export const muted = writable<boolean>(false);
 export const loop = writable<LoopKind>(LoopKind.Off);
 
+export function changeLoop() {
+  switch (get(loop)) {
+    case LoopKind.Always:
+      loop.set(LoopKind.Off);
+      break;
+    case LoopKind.Off:
+      loop.set(LoopKind.Once);
+      break;
+    case LoopKind.Once:
+      loop.set(LoopKind.Always);
+      break;
+  }
+}
+
 export const searchText = writable<string>("");
 
 export function search(q: string) {
