@@ -22,7 +22,7 @@
 	import Navbar from '../components/navbar.svelte';
 	import PlayingNow from '../components/playingnow.svelte';
 	import VolumeSlider from '../components/volumeSlider.svelte';
-	import TrackControls from '../components/trackControls.svelte';
+	import LoopButton from '../components/loopButton.svelte';
 
 	$: title = $currentTrack !== null ? `${$currentTrack.track.title} - musikspider` : `musikspider`;
 
@@ -131,7 +131,7 @@
 		<div class="card rounded-none w-screen flex flex-grow items-center h-12">
 			<PlayingNow />
 			<div class="flex items-center ml-auto">
-				<TrackControls />
+				<LoopButton />
 				<VolumeSlider />
 			</div>
 		</div>
