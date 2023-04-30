@@ -86,7 +86,7 @@
 						nextQueuePosition(true);
 						break;
 					case LoopKind.Once:
-						const queuePos = nextQueuePosition();
+						const queuePos = nextQueuePosition(true);
 						if (queuePos === null) {
 							queuePosition.set(0);
 						}
