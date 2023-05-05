@@ -1,3 +1,4 @@
+import { dev } from '$app/environment';
 import type { TrackWithId } from "./types";
 
 const API_VERSION: number = 20;
@@ -15,8 +16,6 @@ interface Message {
 };
 type MessageType = 'request' | 'response' | 'broadcast';
 type RequestCallback = (arg0: Message | null) => void;
-
-type Category = 'album' | 'artist' | 'album_artist' | 'genre' | 'playlist';
 
 interface Callbacks {
   onDisconnect: (authenticated: boolean, reason: string) => void;
@@ -52,7 +51,8 @@ export class MetadataCommunicator {
   connect(address: string, password: string) {
     this.close();
 
-    this.ws = new WebSocket(`ws://${address}`);
+    const scheme = dev ? "ws" : "wss";
+    this.ws = new WebSocket(`${scheme}://${address}`);
 
     this.ws.addEventListener('open', (event) => {
       this.makeRequest("authenticate", 'request', { password }, (msg) => {

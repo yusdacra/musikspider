@@ -1,5 +1,6 @@
 import { get, writable } from 'svelte/store';
 import { type ResourceId, type Track, type TrackId, type TrackWithId, LoopKind } from './types';
+import { dev } from '$app/environment';
 
 function writableStorage(key: string, defaultValue: string) {
   const store = writable(localStorage.getItem(key) ?? defaultValue);
@@ -11,11 +12,13 @@ export const address = writableStorage("address", "127.0.0.1:5505");
 export const token = writableStorage("token", "");
 
 export function makeThumbnailUrl(id: ResourceId) {
-  return `http://${get(address)}/thumbnail/${id}?token=${get(token)}`;
+  const scheme = dev ? "http" : "https";
+  return `${scheme}://${get(address)}/thumbnail/${id}?token=${get(token)}`;
 }
 
 export function makeAudioUrl(id: TrackId) {
-  return `http://${get(address)}/audio/external_id/${id}?token=${get(token)}`;
+  const scheme = dev ? "http" : "https";
+  return `${scheme}://${get(address)}/audio/external_id/${id}?token=${get(token)}`;
 }
 
 export const currentTrack = writable<TrackWithId | null>(null);
