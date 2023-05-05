@@ -2,9 +2,12 @@
 
 # Development
 
-- Get `pnpm` and `nodejs`.
-- Run `pnpm dev` for development server.
-- Run `pnpm build` for production build.
+- Get `yarn` and `nodejs`.
+- Run `yarn dev` for development server.
+- Run `yarn build` for production build.
+
+You can also use the provided Nix development shell if you are using Nix flakes.
+A production build is also available at `packages.x86_64-linux.musikspider`.
 
 # TODOs
 

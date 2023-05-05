@@ -9,15 +9,31 @@
   outputs = inp:
     inp.parts.lib.mkFlake {inputs = inp;} {
       systems = import inp.systems;
-      imports = [inp.naked-shell.flakeModule];
-      perSystem = {config, pkgs, ...}: {
+      imports = [
+        inp.naked-shell.flakeModule
+      ];
+      perSystem = {
+        config,
+        pkgs,
+        system,
+        ...
+      }: {
         devShells.default = config.mk-naked-shell.lib.mkNakedShell {
           name = "musikspider-devshell";
           packages = with pkgs; [
             nodejs
-            nodePackages.pnpm
+            yarn
+            yarn2nix
           ];
         };
+        packages.musikspider = pkgs.mkYarnPackage {
+          src = ./.;
+
+          buildPhase = "HOME=$TMPDIR yarn --offline build";
+          distPhase = "true";
+          installPhase = "mv deps/musikspider/build $out";
+        };
+        packages.default = config.packages.musikspider;
       };
     };
 }
