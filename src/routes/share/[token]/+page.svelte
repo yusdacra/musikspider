@@ -18,7 +18,7 @@
 		const hasAlbum = data.info.album;
 
 		if (hasArtist && hasAlbum) {
-			return `from ${data.info.album} by ${data.info.artist}`;
+			return `from ${data.info.album}\nby ${data.info.artist}`;
 		} else if (hasArtist) {
 			return `by ${data.info.artist}`;
 		} else if (hasAlbum) {
@@ -44,6 +44,7 @@
 	<meta property="og:description" content={getAlbumArtistInfo()} />
 	<meta property="og:image" content={data.thumbnail_url} />
 	<meta property="og:audio" content={data.audio_url} />
+	<meta name="theme-color" content={data.color} />
 </svelte:head>
 
 <div
@@ -59,7 +60,6 @@
 		bind:paused
 		bind:currentTime
 		bind:duration
-		on:loadstart={(event) => event.currentTarget.play()}
 	/>
 	<button
 		class="relative rounded placeholder w-16 h-16"
