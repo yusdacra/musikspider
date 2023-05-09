@@ -1,4 +1,6 @@
+import { PUBLIC_MUSIKQUAD_SERVER } from '$env/dynamic/public';
 import { LOCAL_MUSIKQUAD_SERVER } from '$env/static/private';
+import { scheme } from '../../../utils';
 
 interface MusicInfo {
   title: string,
@@ -7,12 +9,11 @@ interface MusicInfo {
 }
 
 export async function load({ params }) {
-  const server = LOCAL_MUSIKQUAD_SERVER;
-  const resp = await fetch(`${server}/share/info/${params.token}`);
+  const resp = await fetch(`${LOCAL_MUSIKQUAD_SERVER}/share/info/${params.token}`);
   const info: MusicInfo = await resp.json();
   return {
     info,
-    thumbnail_url: `${server}/share/thumbnail/${params.token}`,
-    audio_url: `${server}/share/audio/${params.token}`,
+    thumbnail_url: `${scheme}://${PUBLIC_MUSIKQUAD_SERVER}/share/thumbnail/${params.token}`,
+    audio_url: `${scheme}://${PUBLIC_MUSIKQUAD_SERVER}/share/audio/${params.token}`,
   };
 }
