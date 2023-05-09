@@ -1,4 +1,6 @@
-`musikspider` is a web client that works with `musikquadrupled`. It is made using SvelteKit.
+`musikspider` is a web client that works with `musikquadrupled`. It is made using SvelteKit. WIP.
+
+![image](https://github.com/yusdacra/musikspider/assets/19897088/d5b407cf-ea14-4c62-af79-453fed84bace)
 
 # Development
 
