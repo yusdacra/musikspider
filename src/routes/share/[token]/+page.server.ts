@@ -1,4 +1,4 @@
-import { PUBLIC_MUSIKQUAD_SERVER } from '$env/dynamic/public';
+import { PUBLIC_MUSIKQUAD_SERVER } from '$env/static/public';
 import { LOCAL_MUSIKQUAD_SERVER } from '$env/static/private';
 import { scheme } from '../../../utils';
 
