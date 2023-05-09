@@ -78,6 +78,8 @@
 			message: `Fetched ${count} tracks`,
 			background: 'variant-filled-success'
 		});
+
+		comm.close();
 	});
 </script>
 

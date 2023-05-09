@@ -13,6 +13,21 @@
 
 	export let data;
 
+	function getAlbumArtistInfo() {
+		const hasArtist = data.info.artist;
+		const hasAlbum = data.info.album;
+
+		if (hasArtist && hasAlbum) {
+			return `from ${data.info.album} by ${data.info.artist}`;
+		} else if (hasArtist) {
+			return `by ${data.info.artist}`;
+		} else if (hasAlbum) {
+			return `from ${data.info.album}`;
+		} else {
+			return '';
+		}
+	}
+
 	let showIcon = false;
 	let isError = false;
 
@@ -25,6 +40,10 @@
 
 <svelte:head>
 	<title>{data.info.title} {data.info.artist !== '' ? `- ${data.info.artist}` : ''}</title>
+	<meta property="og:title" content={data.info.title} />
+	<meta property="og:description" content={getAlbumArtistInfo()} />
+	<meta property="og:image" content={data.thumbnail_url} />
+	<meta property="og:audio" content={data.audio_url} />
 </svelte:head>
 
 <div
@@ -40,6 +59,7 @@
 		bind:paused
 		bind:currentTime
 		bind:duration
+		on:loadstart={(event) => event.currentTarget.play()}
 	/>
 	<button
 		class="relative rounded placeholder w-16 h-16"
