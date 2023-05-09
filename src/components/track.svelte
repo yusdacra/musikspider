@@ -4,14 +4,13 @@
 		makeThumbnailUrl,
 		currentTrack,
 		setQueuePositionTo,
-		makeGenScopedTokenUrl,
-		makeShareUrl
+		makeGenScopedTokenUrl
 	} from '../stores';
 	import Spinnny from '~icons/line-md/loading-loop';
 	import IconPlay from '~icons/mdi/play';
 	import IconMusic from '~icons/mdi/music';
 	import { toastStore } from '@skeletonlabs/skeleton';
-	import { getAudioElement } from '../utils';
+	import { getAudioElement, makeShareUrl } from '../utils';
 
 	export let track_with_id: TrackWithId;
 	let track = track_with_id.track;
