@@ -18,7 +18,7 @@
 		<Link title={link.id} href={link.href ?? `/${link.id}`}>
 			<svelte:component this={link.icon} class="w-7 h-7" />
 		</Link>
-		{#if link.id === 'search' && $page.route.id === '/'}
+		{#if link.id === 'search' && $page.route.id === '/(app)'}
 			<input
 				id="search-input"
 				class="input rounded-none"

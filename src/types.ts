@@ -9,7 +9,7 @@ export interface Track {
   album_id: ResourceId,
   artist_name: string,
   artist_id: ResourceId,
-  thumbnail_id: ResourceId,
+  thumbnail_id: number,
 }
 
 export interface TrackWithId {

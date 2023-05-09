@@ -1,9 +1,17 @@
 <script lang="ts">
 	import type { TrackWithId } from '../types';
-	import { makeThumbnailUrl, currentTrack, setQueuePositionTo, getAudioElement } from '../stores';
+	import {
+		makeThumbnailUrl,
+		currentTrack,
+		setQueuePositionTo,
+		makeGenScopedTokenUrl,
+		makeShareUrl
+	} from '../stores';
 	import Spinnny from '~icons/line-md/loading-loop';
 	import IconPlay from '~icons/mdi/play';
 	import IconMusic from '~icons/mdi/music';
+	import { toastStore } from '@skeletonlabs/skeleton';
+	import { getAudioElement } from '../utils';
 
 	export let track_with_id: TrackWithId;
 	let track = track_with_id.track;
@@ -13,6 +21,23 @@
 	let showSpinner = false;
 	let isError = false;
 	let showPlayIcon = false;
+
+	async function shareMusic() {
+		try {
+			const resp = await fetch(makeGenScopedTokenUrl(track_id));
+			const shareToken = await resp.text();
+			await navigator.clipboard.writeText(makeShareUrl(shareToken));
+			toastStore.trigger({
+				message: `copied share URL to clipboard`,
+				background: 'variant-filled-success'
+			});
+		} catch (e) {
+			toastStore.trigger({
+				message: `error while generating share URL: ${e}`,
+				background: 'variant-filled-error'
+			});
+		}
+	}
 </script>
 
 <div class="flex gap-2 w-fit max-w-full">
@@ -36,22 +61,29 @@
 				: 'hidden'}"
 		/>
 		<!-- svelte-ignore a11y-missing-attribute -->
-		<img
-			src={thumbUrl}
-			class="child {showSpinner || isError ? 'hidden' : ''}"
-			on:error={() => {
-				isError = true;
-				showSpinner = false;
-			}}
-			on:loadstart={() => (showSpinner = true)}
-			on:load={() => (showSpinner = false)}
-		/>
+		{#if thumbUrl !== null}
+			<img
+				src={thumbUrl}
+				class="child {showSpinner || isError ? 'hidden' : ''}"
+				on:error={() => {
+					isError = true;
+					showSpinner = false;
+				}}
+				on:loadstart={() => (showSpinner = true)}
+				on:load={() => (showSpinner = false)}
+			/>
+		{/if}
 		<IconPlay
 			class="child play-icon variant-glass-surface {showPlayIcon ? 'opacity-100' : 'opacity-0'}"
 		/>
 	</button>
 	<div class="whitespace-nowrap overflow-ellipsis overflow-hidden">
 		<span>#{track.track_num} - {track.title}</span>
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<span
+			class="chip variant-soft-secondary hover:variant-filled-secondary py-0.5 px-2"
+			on:click={shareMusic}>share</span
+		>
 		<div class="text-sm whitespace-nowrap overflow-ellipsis overflow-hidden">
 			<span
 				class="badge variant-filled-primary py-0.5 {$currentTrack?.id === track_id

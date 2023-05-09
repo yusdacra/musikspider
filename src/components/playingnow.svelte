@@ -7,7 +7,6 @@
 		muted,
 		paused,
 		nextQueuePosition,
-		getAudioElement,
 		loop,
 		queuePosition,
 		prevQueuePosition
@@ -17,22 +16,12 @@
 	import IconMusic from '~icons/mdi/music';
 	import { RangeSlider } from '@skeletonlabs/skeleton';
 	import { LoopKind } from '../types';
+	import { calculateMinuteSecond, getAudioElement } from '../utils';
 
 	$: track = $currentTrack?.track;
 	$: track_id = $currentTrack?.id;
 	$: thumbUrl = track ? makeThumbnailUrl(track.thumbnail_id) : null;
 	$: audioUrl = track_id ? makeAudioUrl(track_id) : null;
-
-	function calculateMinuteSecond(seconds: number) {
-		let secs = Math.floor(seconds);
-		let secsLeftover = secs % 60;
-		let minutes = (secs - secsLeftover) / 60;
-
-		let secondsFormatted = secsLeftover < 10 ? `0${secsLeftover}` : `${secsLeftover}`;
-		let minutesFormatted = minutes < 10 ? `0${minutes}` : `${minutes}`;
-
-		return `${minutesFormatted}:${secondsFormatted}`;
-	}
 
 	let currentTime = 0;
 	let duration = 0;

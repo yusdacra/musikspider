@@ -1,10 +1,9 @@
 <script lang="ts">
 	import VirtualList from 'svelte-tiny-virtual-list';
-	import { currentTrack, queue, queuePosition, tracks } from '../../stores';
-	import TrackComponent from '../../components/track.svelte';
-	import type { TrackWithId } from '../../types';
+	import { currentTrack, queue, queuePosition, tracks } from '../../../stores';
+	import TrackComponent from '../../../components/track.svelte';
+	import type { TrackWithId } from '../../../types';
 	import IconRemove from '~icons/mdi/minus-thick';
-	import { get } from 'svelte/store';
 
 	$: trackCount = $queue.length;
 	let trackItemSize = 62;

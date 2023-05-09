@@ -1,6 +1,8 @@
 import { get, writable } from 'svelte/store';
-import { type ResourceId, type Track, type TrackId, type TrackWithId, LoopKind } from './types';
-import { dev } from '$app/environment';
+import { type Track, type TrackId, type TrackWithId, LoopKind } from './types';
+
+import { PUBLIC_BASEURL, PUBLIC_MUSIKQUAD_SERVER } from '$env/static/public';
+import { scheme } from './utils';
 
 function writableStorage(key: string, defaultValue: string) {
   const store = writable(localStorage.getItem(key) ?? defaultValue);
@@ -8,17 +10,26 @@ function writableStorage(key: string, defaultValue: string) {
   return store;
 }
 
-export const address = writableStorage("address", "127.0.0.1:5505");
+export const address = writableStorage("address", PUBLIC_MUSIKQUAD_SERVER);
 export const token = writableStorage("token", "");
 
-export function makeThumbnailUrl(id: ResourceId) {
-  const scheme = dev ? "http" : "https";
+export function makeThumbnailUrl(id: number) {
+  if (id === 0) {
+    return null;
+  }
   return `${scheme}://${get(address)}/thumbnail/${id}?token=${get(token)}`;
 }
 
 export function makeAudioUrl(id: TrackId) {
-  const scheme = dev ? "http" : "https";
   return `${scheme}://${get(address)}/audio/external_id/${id}?token=${get(token)}`;
+}
+
+export function makeGenScopedTokenUrl(id: TrackId) {
+  return `${scheme}://${get(address)}/share/generate/${id}?token=${get(token)}`;
+}
+
+export function makeShareUrl(token: string) {
+  return `${scheme}://${PUBLIC_BASEURL}/share/${token}`;
 }
 
 export const currentTrack = writable<TrackWithId | null>(null);
@@ -146,12 +157,4 @@ export function search(q: string) {
     }
   });
   tracksSorted.set(result);
-}
-
-export function getAudioElement() {
-  const elem = document.getElementById('audio-source');
-  if (elem === null) {
-    return null;
-  }
-  return elem as HTMLAudioElement;
 }

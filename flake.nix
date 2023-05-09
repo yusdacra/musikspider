@@ -20,11 +20,7 @@
       }: {
         devShells.default = config.mk-naked-shell.lib.mkNakedShell {
           name = "musikspider-devshell";
-          packages = with pkgs; [
-            nodejs
-            yarn
-            yarn2nix
-          ];
+          packages = with pkgs; [nodejs yarn];
         };
         packages.musikspider = pkgs.mkYarnPackage {
           src = ./.;

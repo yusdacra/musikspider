@@ -3,8 +3,9 @@
 
 	export let href: string;
 	export let title: string = '';
+	let targetId = href === '/' ? '/(app)' : `/(app)${href}`;
 
-	$: isOnPage = href === $page.route.id;
+	$: isOnPage = targetId === $page.route.id;
 </script>
 
 <a

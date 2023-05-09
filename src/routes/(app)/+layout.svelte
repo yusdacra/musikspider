@@ -3,26 +3,26 @@
 	import '@skeletonlabs/skeleton/themes/theme-crimson.css';
 	// This contains the bulk of Skeletons required styles:
 	import '@skeletonlabs/skeleton/styles/all.css';
-	import '../app.postcss';
+	import '../../app.postcss';
 
 	import { AppShell, Toast, toastStore } from '@skeletonlabs/skeleton';
 	import {
 		address,
 		changeLoop,
 		currentTrack,
-		getAudioElement,
 		muted,
 		paused,
 		queuePosition,
 		token,
 		tracks,
 		tracksSorted
-	} from '../stores';
+	} from '../../stores';
 	import { _metadataComm as comm } from './+layout';
-	import Navbar from '../components/navbar.svelte';
-	import PlayingNow from '../components/playingnow.svelte';
-	import VolumeSlider from '../components/volumeSlider.svelte';
-	import LoopButton from '../components/loopButton.svelte';
+	import Navbar from '../../components/navbar.svelte';
+	import PlayingNow from '../../components/playingnow.svelte';
+	import VolumeSlider from '../../components/volumeSlider.svelte';
+	import LoopButton from '../../components/loopButton.svelte';
+	import { getAudioElement, interceptKeys } from '../../utils';
 
 	$: title = $currentTrack !== null ? `${$currentTrack.track.title} - musikspider` : `musikspider`;
 
@@ -82,41 +82,10 @@
 </script>
 
 <svelte:window
-	on:keydown={(event) => {
-		const tagName = document.activeElement?.tagName ?? '';
-		const actions = new Map([
-			['Space', () => ($paused = !$paused)],
-			['KeyL', changeLoop],
-			['KeyM', () => ($muted = !$muted)],
-			['KeyS', () => document.getElementById('search-input')?.focus()],
-			[
-				'ArrowLeft',
-				() => {
-					const audio = getAudioElement();
-					if (audio !== null) {
-						audio.currentTime -= 5;
-					}
-				}
-			],
-			[
-				'ArrowRight',
-				() => {
-					const audio = getAudioElement();
-					if (audio !== null) {
-						audio.currentTime += 5;
-					}
-				}
-			]
-		]);
-		if (tagName !== 'INPUT' && actions.has(event.code)) {
-			event.preventDefault();
-			event.stopPropagation();
-			const action = actions.get(event.code) ?? null;
-			if (action !== null) {
-				action();
-			}
-		}
-	}}
+	on:keydown={interceptKeys([
+		['KeyS', () => document.getElementById('search-input')?.focus()],
+		['KeyL', changeLoop]
+	])}
 />
 
 <svelte:head>

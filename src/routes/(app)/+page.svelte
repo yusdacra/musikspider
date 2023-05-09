@@ -1,8 +1,8 @@
 <script lang="ts">
 	import VirtualList from 'svelte-tiny-virtual-list';
-	import { queue, tracks, tracksSorted } from '../stores';
-	import TrackComponent from '../components/track.svelte';
-	import type { Track, TrackWithId } from '../types';
+	import { tracks, tracksSorted } from '../../stores';
+	import TrackComponent from '../../components/track.svelte';
+	import type { TrackWithId } from '../../types';
 
 	$: trackCount = $tracksSorted.length;
 	let trackItemSize = 62;

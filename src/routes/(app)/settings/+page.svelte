@@ -1,5 +1,5 @@
 <script>
-	import { token, address } from '../../stores';
+	import { token, address } from '../../../stores';
 	import Input from './input.svelte';
 	import { _metadataComm as comm } from '../+layout';
 
