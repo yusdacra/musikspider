@@ -14,7 +14,7 @@ A production build is also available at `packages.x86_64-linux.musikspider`.
 # TODOs
 
 - [x] basic music playing and controls
-- [ ] implement playlists (local)
+- [ ] implement playlists (local and remote)
 - [ ] implement album and artist viewing
 - [ ] implement persistence of music data, playlists and such
 - [ ] implement scrobbling (last.fm, etc)
