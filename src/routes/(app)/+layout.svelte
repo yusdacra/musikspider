@@ -1,11 +1,8 @@
 <script lang="ts">
-	// Your selected Skeleton theme:
-	import '@skeletonlabs/skeleton/themes/theme-crimson.css';
-	// This contains the bulk of Skeletons required styles:
-	import '@skeletonlabs/skeleton/styles/all.css';
 	import '../../app.postcss';
 
-	import { AppShell, Toast, toastStore } from '@skeletonlabs/skeleton';
+	import { AppShell, Toast, getToastStore, initializeStores } from '@skeletonlabs/skeleton';
+	import type { ToastSettings, ToastStore } from '@skeletonlabs/skeleton';
 	import {
 		address,
 		changeLoop,
@@ -23,6 +20,9 @@
 	import VolumeSlider from '../../components/volumeSlider.svelte';
 	import LoopButton from '../../components/loopButton.svelte';
 	import { getAudioElement, interceptKeys } from '../../utils';
+
+	initializeStores();
+	const toastStore = getToastStore();
 
 	$: title = $currentTrack !== null ? `${$currentTrack.track.title} - musikspider` : `musikspider`;
 
@@ -94,6 +94,7 @@
 	<title>{title}</title>
 </svelte:head>
 
+<Toast position="tr" />
 <AppShell>
 	<svelte:fragment slot="footer">
 		<div class="flex w-screen place-content-end max-sm:place-content-center">
@@ -109,4 +110,3 @@
 	</svelte:fragment>
 	<slot />
 </AppShell>
-<Toast position="tr" />

@@ -20,16 +20,19 @@
       }: {
         devShells.default = config.mk-naked-shell.lib.mkNakedShell {
           name = "musikspider-devshell";
-          packages = with pkgs; [nodejs yarn deno];
+          packages = with pkgs; [nodejs_20 bun];
+          shellHook = ''
+            export PATH="$PATH:$PWD/node_modules/.bin"
+          '';
         };
-        packages.musikspider = pkgs.mkYarnPackage {
-          src = ./.;
+        # packages.musikspider = pkgs.mkYarnPackage {
+        #   src = ./.;
 
-          buildPhase = "HOME=$TMPDIR yarn --offline build";
-          distPhase = "true";
-          installPhase = "mv deps/musikspider/build $out";
-        };
-        packages.default = config.packages.musikspider;
+        #   buildPhase = "HOME=$TMPDIR yarn --offline build";
+        #   distPhase = "true";
+        #   installPhase = "mv deps/musikspider/build $out";
+        # };
+        # packages.default = config.packages.musikspider;
       };
     };
 }
