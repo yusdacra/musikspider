@@ -4,12 +4,12 @@
 
 # Development
 
-- Get `yarn` and `nodejs`.
-- Run `yarn dev` for development server.
-- Run `yarn build` for production build.
+- Get `bun` and `nodejs`.
+- Run `bun run preview` for development server.
+- Run `bun run build` for production build.
 
 You can also use the provided Nix development shell if you are using Nix flakes.
-A production build is also available at `packages.x86_64-linux.musikspider`.
+A production build is also available at `packages.x86_64-linux.default`.
 
 # TODOs
 
