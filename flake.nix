@@ -22,7 +22,11 @@
       in {
         devShells.default = config.mk-naked-shell.lib.mkNakedShell {
           name = "musikspider-devshell";
-          packages = with pkgs; [nodejs-slim_latest bun];
+          packages = with pkgs; [
+            nodejs-slim_latest bun
+            nodePackages.svelte-language-server
+            nodePackages.typescript-language-server
+          ];
           shellHook = ''
             export PATH="$PATH:$PWD/node_modules/.bin"
           '';
